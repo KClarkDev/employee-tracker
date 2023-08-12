@@ -18,3 +18,11 @@ VALUES ("Engineer I", 60000, 2),
 ("Sales Representative", NULL, 4),
 ("Land Representative", NULL, 5),
 ("Marketing Specialist", 55000, 4);
+
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
+VALUES ("Tyler", "Schulz", 6, NULL ),
+("Samantha", "Brown", 7, 9),
+("Caitlin", "Jones", 9, NULL),
+("Jason", "Miller", 10, NULL),
+("Julia", "Grayson", 2, NULL);
+
