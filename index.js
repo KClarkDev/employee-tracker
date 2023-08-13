@@ -1,4 +1,5 @@
 const inquirer = require("inquirer");
+const utils = require("./utils/utils.js");
 
 const question = [
   {
@@ -23,7 +24,8 @@ function init() {
     switch (answer.userAction) {
       case "View all departments":
         // Function to present a formatted table showing department names and department ids
-        console.log("You chose to view all departments");
+        utils.viewDepartments();
+        askForAnotherAction();
         break;
       case "View all roles":
         // Function to present the job title, role id, the department that role belongs to, and the salary for that role
@@ -53,6 +55,23 @@ function init() {
         console.log("Invalid response");
     }
   });
+}
+
+function askForAnotherAction() {
+  inquirer
+    .prompt({
+      type: "confirm",
+      name: "anotherAction",
+      message: "Do you want to perform another query?",
+    })
+    .then((answer) => {
+      if (answer.anotherAction) {
+        // If the user wants to perform another action, run init again
+        init();
+      } else {
+        console.log("Goodbye!");
+      }
+    });
 }
 
 // Function call to initialize app

@@ -1,15 +1,18 @@
 // Utility functions
 
-function viewDepartments() {}
+module.exports = {
+  viewDepartments: function () {
+    console.log("You're calling a function from a different file! Yay!");
+  },
+  viewRoles: function () {},
 
-function viewRoles() {}
+  viewEmployees: function () {},
 
-function viewEmployees() {}
+  addDepartments: function () {},
 
-function addDepartments() {}
+  addRole: function () {},
 
-function addRole() {}
+  addEmployee: function () {},
 
-function addEmployee() {}
-
-function updateEmployeeRole() {}
+  updateEmployeeRole: function () {},
+};

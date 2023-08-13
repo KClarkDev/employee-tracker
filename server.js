@@ -1,42 +1,25 @@
-const bodyParser = require("body-parser");
 const express = require("express");
-// Import and require mysql2
 const mysql = require("mysql2");
 
-const PORT = process.env.PORT || 3001;
+// Enable access to .env variables
+require("dotenv").config();
+
 const app = express();
+const PORT = process.env.PORT || 3001;
 
 // Express middleware
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Connect to database
 const db = mysql.createConnection(
   {
     host: "localhost",
     // MySQL username,
-    user: "root",
-    // TODO: Add MySQL password
-    password: "password",
-    database: "movie_db",
+    user: process.env.DB_USER,
+    // TODO: Add MySQL password here
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   },
-  console.log(`Connected to the movie_db database.`)
+  console.log(`Connected to the company_db database`)
 );
-
-db.connect((err) => {
-  if (err) throw Error;
-  console.log("Connected to the database!");
-});
-
-app.get("/api/movies", (req, res) => {
-  const query = "SELECT * FROM movies";
-  db.query(query, (err, results) => {
-    if (err) throw err;
-    res.json(results);
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
