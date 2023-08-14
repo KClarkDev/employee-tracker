@@ -1,5 +1,3 @@
-console.log("TOP OF INDEX.JS");
-
 const inquirer = require("inquirer");
 const utils = require("./utils/utils.js");
 const mysql = require("mysql2");
@@ -41,7 +39,7 @@ function init() {
     switch (answer.userAction) {
       case "View all departments":
         // Function to present a formatted table showing department names and department ids
-        utils.viewDepartments();
+        utils.viewDepartments(db);
         askForAnotherAction();
         break;
       case "View all roles":
@@ -93,6 +91,7 @@ function askForAnotherAction() {
         init();
       } else {
         console.log("Goodbye!");
+        process.exit();
       }
     });
 }
@@ -100,7 +99,8 @@ function askForAnotherAction() {
 // Function call to initialize app
 init();
 
-module.exports = {
-  init: init,
-  askForAnotherAction: askForAnotherAction,
-};
+// module.exports = {
+//   init: init,
+//   askForAnotherAction: askForAnotherAction,
+//   db: db,
+// };

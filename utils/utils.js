@@ -1,25 +1,21 @@
-console.log("TOP OF UTILS.JS");
-// const { app, db } = require("../server");
+// Define the printTable function
+function printDepartments(results) {
+  // Assuming results is an array of objects with department data
+  console.log("\n");
+  console.log("||DEPARTMENTS||");
+  results.forEach((department) => {
+    console.log(`ID: ${department.id} | Name: ${department.dept_name}`);
+  });
+}
 
 // Utility functions
-
 module.exports = {
-  viewDepartments: function () {
+  viewDepartments: function (db) {
     // Read all departments
-    app.get("/api/departments", (req, res) => {
-      const sql = `SELECT id, dept_name FROM departments`;
-
-      db.query(sql, (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        res.json({
-          message: "success",
-          data: rows,
-        });
-      });
+    db.query(`SELECT * FROM departments`, function (err, results) {
+      printDepartments(results);
     });
+    return;
   },
 
   viewRoles: function () {},
