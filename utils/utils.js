@@ -1,40 +1,19 @@
-console.log("AT THE TOP OF UTILS.JS");
-const server = require("../server.js");
-console.log(`The server app is ${server.app}`);
+const express = require("express");
+const { db } = require("./db");
+const { init } = require("./index");
 
-// Utility functions
+const app = express();
+const PORT = process.env.PORT || 3001;
 
-module.exports = {
-  viewDepartments: function () {
-    // Read all departments
-    console.log("INSIDE VIEWDEPARTMENTS");
-    console.log(`The server app (the second time) is ${server.app}`);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-    server.app.get("/api/departments", (req, res) => {
-      const sql = `SELECT id, dept_name FROM departments`;
-      console.log("INSIDE GET REQUEST");
-      server.db.query(sql, (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        res.json({
-          message: "success",
-          data: rows,
-        });
-      });
-    });
-  },
+// Rest of the server setup
 
-  viewRoles: function () {},
+app.listen(PORT, function (err) {
+  if (err) console.log("Error in server setup");
+  console.log("Server listening on Port", PORT);
+});
 
-  viewEmployees: function () {},
-
-  addDepartment: function () {},
-
-  addRole: function () {},
-
-  addEmployee: function () {},
-
-  updateEmployeeRole: function () {},
-};
+// Import and initialize index
+init();
