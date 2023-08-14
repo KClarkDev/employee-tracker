@@ -1,11 +1,7 @@
-// Define the printTable function
-function printDepartments(results) {
-  // Assuming results is an array of objects with department data
+// Define the printTable function, used by the utility functions
+function printTable(results) {
   console.log("\n");
-  console.log("||DEPARTMENTS||");
-  results.forEach((department) => {
-    console.log(`ID: ${department.id} | Name: ${department.dept_name}`);
-  });
+  console.table(results);
 }
 
 // Utility functions
@@ -13,20 +9,49 @@ module.exports = {
   viewDepartments: function (db) {
     // Read all departments
     db.query(`SELECT * FROM departments`, function (err, results) {
-      printDepartments(results);
+      printTable(results);
     });
-    return;
   },
 
-  viewRoles: function () {},
+  viewRoles: function (db) {
+    // Read all roles
+    db.query(`SELECT * FROM roles`, function (err, results) {
+      printTable(results);
+    });
+  },
 
-  viewEmployees: function () {},
+  viewEmployees: function (db) {
+    // Read all employees
+    db.query(`SELECT * FROM employees`, function (err, results) {
+      printTable(results);
+    });
+  },
 
-  addDepartment: function () {},
+  addDepartment: function (db) {
+    // Read all departments
+    db.query(`SELECT * FROM departments`, function (err, results) {
+      printTable(results);
+    });
+  },
 
-  addRole: function () {},
+  addRole: function (db) {
+    // Read all departments
+    db.query(`SELECT * FROM departments`, function (err, results) {
+      printTable(results);
+    });
+  },
 
-  addEmployee: function () {},
+  addEmployee: function (db) {
+    // Read all departments
+    db.query(`SELECT * FROM departments`, function (err, results) {
+      printTable(results);
+    });
+  },
 
-  updateEmployeeRole: function () {},
+  updateEmployeeRole: function (db) {
+    // Read all departments
+    db.query(`SELECT * FROM departments`, function (err, results) {
+      printTable(results);
+    });
+  },
 };
