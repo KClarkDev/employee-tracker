@@ -8,7 +8,7 @@ module.exports = {
 
   viewEmployees: function () {},
 
-  addDepartments: function () {},
+  addDepartment: function () {},
 
   addRole: function () {},
 
