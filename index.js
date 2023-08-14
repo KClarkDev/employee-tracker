@@ -1,3 +1,5 @@
+console.log("TOP OF INDEX.JS");
+
 const inquirer = require("inquirer");
 const utils = require("./utils/utils.js");
 
@@ -81,4 +83,9 @@ function askForAnotherAction() {
 }
 
 // Function call to initialize app
-init();
+// init();
+
+module.exports = {
+  init: init,
+  askForAnotherAction: askForAnotherAction,
+};
