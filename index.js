@@ -2,6 +2,21 @@ console.log("TOP OF INDEX.JS");
 
 const inquirer = require("inquirer");
 const utils = require("./utils/utils.js");
+const mysql = require("mysql2");
+
+// Enable access to .env variables
+require("dotenv").config();
+
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: "localhost",
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
+  console.log(`Connected to the company_db database`)
+);
 
 const question = [
   {
@@ -83,7 +98,7 @@ function askForAnotherAction() {
 }
 
 // Function call to initialize app
-// init();
+init();
 
 module.exports = {
   init: init,
