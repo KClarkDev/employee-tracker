@@ -236,7 +236,62 @@ function addEmployee() {
 }
 
 // Function to prompt the user to select an employee to update and their new role and this information is updated in the database
-function updateEmployeeRole() {}
+function updateEmployeeRole() {
+  // Fetch role options from the database
+  db.query("SELECT id, title FROM roles", function (err, roles) {
+    if (err) throw err;
+
+    // Create choices array using role data
+    const roleChoices = roles.map((role) => ({
+      name: role.title,
+      value: role.id,
+    }));
+
+    // Fetch employee options from the database
+    db.query(
+      "SELECT id, first_name, last_name FROM employees",
+      function (err, employees) {
+        if (err) throw err;
+
+        // Create choices array using employee data
+        const employeeChoices = employees.map((employee) => ({
+          name: `${employee.first_name} ${employee.last_name}`,
+          value: employee.id,
+        }));
+
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "emplName",
+              message: "What employee record do you want to update?",
+              choices: employeeChoices,
+            },
+            {
+              type: "list",
+              name: "emplNewRole",
+              message: "What role do you want to assign to the employee?",
+              choices: roleChoices,
+            },
+          ])
+          .then((answer) => {
+            const emplNewRole = answer.emplNewRole;
+            const emplID = answer.emplName;
+
+            db.query(
+              `UPDATE employees SET employees.role_id = ? WHERE employees.id = ?`,
+              [emplNewRole, emplID],
+              function (err, results) {
+                if (err) throw err;
+                console.log(`Successfully updated the role for the employee`);
+                askForAnotherAction();
+              }
+            );
+          });
+      }
+    );
+  });
+}
 
 // Function to initialize app
 function init() {
