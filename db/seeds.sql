@@ -13,7 +13,7 @@ VALUES ("Engineer I", 60000, 2),
 ("Geospatial Analyst II", 60000, 3),
 ("Geospatial Analyst III", 70000, 3),
 ("Ecologist I", 40000, 1),
-("Ecologist II", 5000, 1),
+("Ecologist II", 50000, 1),
 ("Ecologist III", 60000, 1),
 ("Sales Representative", NULL, 4),
 ("Land Representative", NULL, 5),
@@ -26,4 +26,5 @@ VALUES ("Tyler", "Schulz", 6, NULL ),
 ("Jason", "Miller", 10, NULL),
 ("Julia", "Grayson", 2, NULL);
 
-UPDATE employees SET manager_id = 1 WHERE first_name = "Samantha";
+/* Employee records must be created (INSERT) first before setting manager relationship (UPDATE)*/
+UPDATE employees SET manager_id = 3 WHERE first_name = "Samantha";

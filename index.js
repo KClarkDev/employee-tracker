@@ -36,7 +36,7 @@ const question = [
 // Function to present a formatted table showing department names and department ids
 function viewDepts() {
   db.query(
-    `SELECT id AS ID, dept_name AS Department_Name FROM departments`,
+    `SELECT id AS Department_ID, dept_name AS Department_Name FROM departments`,
     function (err, results) {
       if (err) throw err;
       console.table(results);
@@ -48,7 +48,7 @@ function viewDepts() {
 // Function to present the job title, role id, the department that role belongs to, and the salary for that role
 function viewRoles() {
   db.query(
-    `SELECT id AS ID, title AS Title, salary AS Salary, dept_name AS Department_Name FROM roles JOIN departments on roles.department_id=departments.id`,
+    `SELECT roles.id AS Role_ID, title AS Title, salary AS Salary, dept_name AS Department_Name FROM roles JOIN departments on roles.department_id=departments.id`,
     function (err, results) {
       if (err) throw err;
       console.table(results);
@@ -96,7 +96,7 @@ function addDept() {
         [deptName],
         function (err, results) {
           if (err) throw err;
-          console.log(`Successfully added ${departmentName} to departments`);
+          console.log(`Successfully added ${deptName} to departments`);
           askForAnotherAction();
         }
       );
@@ -105,62 +105,138 @@ function addDept() {
 
 // Function to prompt the user to enter the name, salary, and department for the role and that role is added to the database
 function addRole() {
-  inquirer
-    .prompt({
-      type: "input",
-      name: "roleName",
-      message: "What is the name of the role?",
-      type: "input",
-      name: "roleSalary",
-      message: "What is the salary for the role?",
-      type: "list",
-      name: "roleDept",
-      message: "Which department does the role belong to?",
-    })
-    .then((answer) => {
-      const roleName = answer.roleName;
-      const roleSalary = answer.roleSalary;
-      const roleDept = answer.roleDept;
+  // Fetch department options from the database
+  db.query(
+    "SELECT id, dept_name FROM departments",
+    function (err, departments) {
+      if (err) throw err;
 
-      db.query(
-        `INSERT INTO roles (title, salary, department_id) VALUES (?)`,
-        [roleName],
-        [roleSalary],
-        [roleDept],
-        function (err, results) {
-          if (err) throw err;
-          console.log(
-            `Successfully added ${roleName} and associated information to roles`
+      // Create choices array using department data
+      const departmentChoices = departments.map((department) => ({
+        name: department.dept_name,
+        value: department.id,
+      }));
+
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "roleName",
+            message: "What is the name of the role?",
+          },
+          {
+            type: "input",
+            name: "roleSalary",
+            message: "What is the salary for the role?",
+          },
+          {
+            type: "list",
+            name: "roleDept",
+            message: "Which department does the role belong to?",
+            choices: departmentChoices,
+          },
+        ])
+        .then((answer) => {
+          const roleName = answer.roleName;
+          const roleSalary = answer.roleSalary;
+          const roleDept = answer.roleDept;
+
+          db.query(
+            `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`,
+            [roleName, roleSalary, roleDept],
+            function (err, results) {
+              if (err) throw err;
+              console.log(
+                `Successfully added ${roleName} and associated information to roles`
+              );
+              askForAnotherAction();
+            }
           );
-          askForAnotherAction();
-        }
-      );
-    });
+        });
+    }
+  );
 }
 
 // Function to prompt the user to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 function addEmployee() {
-  inquirer
-    .prompt({
-      type: "input",
-      name: "department",
-      message:
-        "Enter the name of the department you want to add to the database:",
-    })
-    .then((answer) => {
-      const deptName = answer.department;
+  // Fetch role options from the database
+  db.query("SELECT id, title FROM roles", function (err, roles) {
+    if (err) throw err;
 
-      db.query(
-        `INSERT INTO departments (dept_name) VALUES (?)`,
-        [deptName],
-        function (err, results) {
-          if (err) throw err;
-          console.log(`Successfully added ${departmentName} to departments`);
-          askForAnotherAction();
-        }
-      );
-    });
+    // Create choices array using role data
+    const roleChoices = roles.map((role) => ({
+      name: role.title,
+      value: role.id,
+    }));
+
+    // Fetch manager options from the database
+    db.query(
+      "SELECT id, first_name, last_name FROM employees",
+      function (err, managers) {
+        if (err) throw err;
+
+        // Create choices array using manager data
+        const managerChoices = managers.map((manager) => ({
+          name: `${manager.first_name} ${manager.last_name}`,
+          value: manager.id,
+        }));
+
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "firstName",
+              message: "What is the first name of the employee?",
+            },
+            {
+              type: "input",
+              name: "lastName",
+              message: "What is the last name of the employee?",
+            },
+            {
+              type: "list",
+              name: "emplRole",
+              message: "What is the role of the employee?",
+              choices: roleChoices,
+            },
+            {
+              type: "confirm",
+              name: "hasManager",
+              message: "Would you like to enter a manager for the employee?",
+            },
+            {
+              type: "list",
+              name: "emplManager",
+              message: "Who is the manager of this employee?",
+              choices: managerChoices,
+              when: (answers) => answers.hasManager,
+            },
+          ])
+          .then((answer) => {
+            const firstName = answer.firstName;
+            const lastName = answer.lastName;
+            const emplRole = answer.emplRole;
+            const emplManager = answer.emplManager;
+
+            db.query(
+              `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`,
+              [firstName, lastName, emplRole, emplManager],
+              function (err, results) {
+                if (err) throw err;
+                console.log(
+                  `Successfully added ${firstName} ${lastName} and associated information to employees`
+                );
+                askForAnotherAction();
+              }
+            );
+          });
+      }
+    );
+  });
 }
+
+// Function to prompt the user to select an employee to update and their new role and this information is updated in the database
+function updateEmployeeRole() {}
 
 // Function to initialize app
 function init() {
@@ -185,9 +261,7 @@ function init() {
         addEmployee();
         break;
       case "Update an employee role":
-        // Function to prompt the user to select an employee to update and their new role and this information is updated in the database
-        utils.updateEmployeeRole(db);
-        askForAnotherAction();
+        updateEmployeeRole();
         break;
       default:
         console.log("Invalid response");
