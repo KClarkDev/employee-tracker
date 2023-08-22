@@ -21,8 +21,9 @@ VALUES ("Engineer I", 60000, 2),
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES ("Tyler", "Schulz", 6, NULL ),
-("Samantha", "Brown", 7, 9),
+("Samantha", "Brown", 7, NULL),
 ("Caitlin", "Jones", 9, NULL),
 ("Jason", "Miller", 10, NULL),
 ("Julia", "Grayson", 2, NULL);
 
+UPDATE employees SET manager_id = 1 WHERE first_name = "Samantha";
